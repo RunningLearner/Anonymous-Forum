@@ -17,6 +17,5 @@ export class Post extends BaseEntity {
   content: string;
 
   @Column()
-  @Length(6, 255)
   password: string;
 }

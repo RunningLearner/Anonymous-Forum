@@ -6,7 +6,11 @@ bycrpt를 이용한 익명게시판 만들기
 
 원티드 백엔드 프리온보딩 1차 과제입니다. `backend`
 
-## 🌱 서비스 개요
+### 목차
+
+[서비스 개요](#서비스-개요)
+
+## 🌱 #서비스 개요
 
 다음과 같은 기능을 제공하는 RESTful API 서버 개발을 목적으로 구현하였습니다.
 
@@ -40,105 +44,55 @@ bycrpt를 이용한 익명게시판 만들기
 1. 사용자는 제목, 내용, 비밀번호를 입력하여 게시글 작성을 시도합니다.
 2. 이때 제목, 내용, 비밀번호가 정해진 규칙에 부합하지 않다면 게시글이 작성되지 않습니다. `BadRequestError`
 3. 사용자가 입력한 비밀번호는 `bcrypt`를 이용해 암호화된 상태로 DB에 저장됩니다.
+4. 제목은 20자 이하, 내용은 200자 이하, 비밀번호는 숫자가 1개 이상 포함된 6자이상으로 작성되야합니다.
 
  <img width="1423" alt="스크린샷 2022-09-07 오후 9 10 52" src="https://user-images.githubusercontent.com/97277365/188875420-e68da009-1f44-4775-9364-9ab38bd22317.png">
 
-![image](https://user-images.githubusercontent.com/50348197/188390999-fd5821fa-6105-4726-b563-3ed4ac373966.png)
+<img width="1440" alt="스크린샷 2022-09-07 오후 9 15 24" src="https://user-images.githubusercontent.com/97277365/188876006-111d711c-8bec-40cb-9e77-fc7a4ce07e86.png">
 
-**로그인**
+**게시글 불러오기**
 
-1. 회원가입시에 입력한 id(username), 비밀번호를 통해 로그인을 시도합니다.
-2. 암호화된 상태의 패스워드를 복호화하지 않고 비교합니다.
-3. 사용자가 입력한 id(username)이 DB에 없거나, 비밀번호가 다르다면 `BadRequestError`를 반환합니다.
-4. 로그인이 완료된 사용자는 일정 시간만 사용 가능한 JWT token 값을 배정받게 됩니다.
+1. 게시글은 요청 한 번에 20개씩 불러옵니다.
+2. 페이지번호와 한 페이지 당 원하는 만큼 쿼리로 받아옵니다.
+3. 페이지 당 게시글이 명시되지 않을 경우, 기본값은 20입니다.
 
-![image](https://user-images.githubusercontent.com/50348197/188390601-462ab506-05ee-41cf-89cd-e474edcbb7a9.png)
+<img width="1440" alt="스크린샷 2022-09-07 오후 9 22 43" src="https://user-images.githubusercontent.com/97277365/188877335-10851bd7-9800-43fa-84d0-7a287b2d51b2.png">
+<img width="1440" alt="스크린샷 2022-09-07 오후 9 23 39" src="https://user-images.githubusercontent.com/97277365/188877521-9f1cb5e8-abb4-441a-b9f4-7ddfa57d01e5.png">
 
-**회원탈퇴**
+**특정 게시글 불러오기**
 
-1. 회원가입시 입력한 id(username)을 통해 DB에서 사용자 정보를 조회합니다.
-2. ORM 상에서 destroy 하면 `deleted_at` 칼럼에 현재 시간 정보가 저장됩니다.
-3. `deleted_at`이 null이 아니라면 DB상에서 조회가 되지 않습니다. 논리적으로 탈퇴가 구현됩니다.
-
-![image](https://user-images.githubusercontent.com/50348197/188395081-500fae2c-baca-4e43-9dfe-c159bc1a0d44.png)
-
-**회원 권한 변경**
-
-1. 회원가입시 입력한 id(username)과 변경될 role 정보를 입력합니다.
-2. 사용자의 역할이 기존 user에서 입력한 role로 변경됩니다.
-
-![image](https://user-images.githubusercontent.com/50348197/188395162-38e812b6-2bfd-439f-8c05-ff65c8e5072d.png)
-
-### 게시판 정보 관리
-
-게시판은 총 세 가지(운영, 공지, 자유 게시판)로 구분됩니다.
-
-- 유저는 자유 게시판에서 글을 작성, 조회, 수정, 삭제를 진행할 수 있습니다.
-- 유저는 공지 게시판을 조회할 수는 있지만, 공지 게시판에 글을 작성, 수정, 삭제를 할 수는 없습니다.
-- 운영자는 운영, 공지, 자유 게시판의 글을 작성, 조회, 수정, 삭제할 수 있습니다.
-
-권한 처리를 제외하면, 나머지 로직이 같기 때문에 자유 게시판 기준으로 설명합니다.
-
-**게시판 내 여러 건의 게시물 조회**
-
-1.  userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
-2.  로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {user, postType, skip, limit}을 서비스 로직에 보내 페이징 처리된 검색 결과를 가져옵니다.
+1.  요청으로 게시글의 고유 id 값을 받습니다.
+2.  id에 해당하는 게시글을 검색한 후 제목과 내용만을 반환합니다.
 3.  검색된 결과를 json 형식으로 반환합니다.
 
-![image](https://user-images.githubusercontent.com/30682847/188548665-1f447266-b2e2-433d-808a-67a814d692c9.png)
+<img width="1440" alt="스크린샷 2022-09-07 오후 9 26 44" src="https://user-images.githubusercontent.com/97277365/188878028-2806be6d-fcd8-4c5e-b19a-fffadedac82a.png">
 
-**게시판 내 게시글 작성**
+**특정 게시글 수정**
 
-1.  userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
-2.  로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {post, user}를 서비스 로직에 보내 작성 결과를 가져옵니다.
-3.  작성이 성공했다면 201 메시지를 보내며 게시글이 등록됩니다.
+1.  사용자가 입력한 비밀번호를 복호화 하여 게시글의 비밀번호와 비교합니다.
+2.  다르면, `ForbiddenError`를 반환합니다.
+3.  수정할 제목과 내용을 받아 데이터를 최신화합니다.
 
-![image](https://user-images.githubusercontent.com/30682847/188546635-4bc3ffce-bffb-492e-bf39-b40364af15e7.png)
+<img width="1438" alt="스크린샷 2022-09-07 오후 9 30 21" src="https://user-images.githubusercontent.com/97277365/188878696-99429000-3079-4016-8896-fba57006731e.png">
 
-**게시판 내 단건 게시물 조회**
+**특정 게시글 삭제**
 
-1.  userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
-2.  로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {postId, user}를 서비스 로직에 보내 해당하는 페이지 객체를 가져옵니다.
-3.  검색된 결과를 json 형식으로 반환합니다.
+1.  사용자가 입력한 비밀번호를 복호화 하여 게시글의 비밀번호와 비교합니다.
+2.  다르면, `ForbiddenError`를 반환합니다.
+3.  파라미터로 받은 id에 해당하는 게시글을 삭제합니다.
 
-![image](https://user-images.githubusercontent.com/30682847/188546130-a178c1a9-00d5-4cb4-a4ee-6403f80753e9.png)
-
-**게시판 내 게시글 수정**
-
-1.  userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
-2.  로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {postId, newPost, user}를 서비스 로직에 보내 작성자 id와 수정 요청 id를 비교합니다.
-3.  작성자 id와 삭제 요청자 id가 같다면, 200(OK) 메시지를 보내며 게시글이 수정됩니다.
-
-![image](https://user-images.githubusercontent.com/30682847/188547890-330c4f8e-e874-4160-a6c4-c89ddb367a3b.png)
-
-**게시판 내 게시글 삭제**
-
-1.  userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
-2.  로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {postId, user}를 서비스 로직에 보내 작성자 id와 삭제 요청 id를 비교합니다.
-3.  작성자 id와 삭제 요청자 id가 같다면, 200(OK) 메시지를 보내며 게시글이 삭제됩니다.
-    ![image](https://user-images.githubusercontent.com/30682847/188547101-a7ab6545-3e94-43f7-a0dd-ce304fcad10d.png)
+<img width="1440" alt="스크린샷 2022-09-07 오후 9 32 19" src="https://user-images.githubusercontent.com/97277365/188879018-ae3baf0c-1698-48c5-8249-f510ceab15b6.png">
 
 ## 🛠 실행 방법 정리
 
 ```
-npm install
-```
-
-```
+npm build
 npm start
-npm run dev // 개발자용
-npm run swagger // swagger용
 ```
 
-## 🧐 G팀 개발의 특징
-
-### G팀을 소개합니다!
-
-🤴 [고지명](https://github.com/jimyungkoh)  
-😎 [정진관](https://github.com/dingwan0331)  
-🍀 [남승인](https://github.com/RunningLearner)  
-🔪 [이권석](https://github.com/LEEGWONSEOK)  
-👶 [서유진](https://github.com/yujiniii)
+```
+npm run dev // 개발자용
+```
 
 ### 커밋 컨벤션
 
@@ -151,17 +105,44 @@ npm run swagger // swagger용
 `refactor:` 코드의 기능변화 없이 수정할 때  
 `test:` 테스트파일 관련 작업(jest)
 
-### JSDoc 사용
+## #회고
 
-**예시)**
+### 이전 과제에서의 회고
 
-```js
-/**
- * @description 유저의 게시글 수정, 삭제 권한을 확인합니다.
- * @param {string} userRole 유저의 권한
- * @param {number} expectedUserId 현재 접속한 유저의 id
- * @param {number} actualUserId 게시글을 작성한 유저의 id
- * @throws {ForbiddenError} 유저는 해당 게시글 수정, 삭제 권한이 없음
- * @returns {boolean} 게시글 수정, 삭제 권한을 확인 결과
- */
-```
+[이전과제](https://github.com/RunningLearner/JWT-included-forum)
+
+1. 시간관리를 체계적으로 하지 못했다.
+2. 작업단위를 잘 나누지 못했다.
+3. `Typescript`, `TypeORM`을 사용해보자.
+
+### 이번 과제에서의 회고
+
+1. 에러처리를 미처 놓친 부분이 있다.
+
+- 페이지에 게시글 없을 때 에러처리 필요.
+- 찾는 게시글이 없을 때 에러처리 필요.
+
+2. `Typescript`, `TypeORM`을 사용은 했지만 너무나도 미숙해서 시간낭비가 있었다.
+
+- 에러타입관련 try catch 숙지 필요.
+
+3. http 에러코드 204.
+
+- 204를 반환하도록 하고 왜 메세지가 안오는지 한참 헤매였다.
+
+4. hash하면 늘어나요~
+
+- DB에서 비밀번호 6자이상을 설정해 놓았지만 4자리로 입력해도 통과 가능했다.
+  왜냐하면 bcrypt를 통해 해싱된 비밀번호는 엄청 길기 떄문이다.
+  따라서, 해싱을 하기전의 길이로 유효성 검사를 해주어야한다.
+  이것떄문에도 시간을 좀 빼았겼다.
+
+5. async 남발
+
+- async 자동완성으로 함수를 만들다가 await 처리하지 않아서 한참을 헤매였다.
+
+6. 다음과제는 `Nest.js`를 써보는 것도 좋을 것 같다.
+
+### Made By
+
+🍀 [남승인](https://github.com/RunningLearner)
