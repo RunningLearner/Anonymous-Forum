@@ -5,8 +5,8 @@ import { BadRequestError, ForbiddenError } from "../utils/error/errors";
 /**
  * 비밀번호 규칙을 만족하는지 확인하는 함수
  */
-const checkPasswordPattern = async (password: string) => {
-  if (!password.match(/(?=.*\d{1,}){6,}/)) {
+const checkPasswordPattern = (password: string) => {
+  if (!password.match(/^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/)) {
     throw new ForbiddenError("비밀번호가 규칙에 어긋납니다!");
   }
 };
@@ -14,7 +14,7 @@ const checkPasswordPattern = async (password: string) => {
 /**
  * 입력된 비밀번호를 DB 내에 존재하는 비밀번호와 비교하는 함수
  */
-const checkPassword = async (password: string, hash: string) => {
+const checkPassword = (password: string, hash: string) => {
   const result = bcrypt.compareSync(password, hash);
   if (!result) {
     throw new ForbiddenError("비밀번호가 틀렸습니다!");
@@ -24,7 +24,7 @@ const checkPassword = async (password: string, hash: string) => {
 /**
  * 제목과 내용의 길이를 제한하는 함수
  */
-const checkLength = async (title: string, content: string) => {
+const checkLength = (title: string, content: string) => {
   if (title.length >= 21) {
     throw new BadRequestError("제목이 너무 깁니다!");
   }
@@ -45,7 +45,7 @@ export const createPost = async (title: string, content: string, password: strin
     post.content = content;
     post.password = bcrypt.hashSync(password, 12);
     await post.save();
-  } catch (error: any) {
+  } catch (error) {
     throw error;
   }
 };
