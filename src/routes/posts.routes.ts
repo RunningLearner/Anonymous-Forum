@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createPost, getAllPost, getPost, updatePost, deletePost } from "../posts/postsController";
 
-export const path = "/users";
+export const path = "/posts";
 export const router = Router();
 
 router.post("/", createPost);

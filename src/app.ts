@@ -3,12 +3,15 @@ import cors from "cors";
 import { dataSourceOptions } from "./data-source";
 import { DataSource } from "typeorm";
 import router from "./routes/index";
-// import swaggerUi from "swagger-ui-express";
-// import router from "./routes";
+import swaggerUi from "swagger-ui-express";
+import path from "path";
+import YAML from "yamljs";
 // import swaggerOptions from "./swagger/swagger";
 // import errorHandler from "./utils/error/errorHandler";
 
 const app: express.Application = express();
+console.log("hihihi");
+const swaggerFile = YAML.load(path.join(__dirname, "./swagger/swagger-output.yaml"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -29,11 +32,7 @@ AppDataSource.initialize()
   });
 
 // Swagger 연결
-// app.use(
-//   "/swagger"
-//      swaggerUi.serve,
-//      swaggerUi.setup(swaggerFile, { explorer: true })
-// );
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //dev router
 app.use("/api", router);
