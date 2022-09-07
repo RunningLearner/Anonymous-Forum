@@ -6,7 +6,7 @@ import { BadRequestError, ForbiddenError } from "../utils/error/errors";
  * 비밀번호 규칙을 만족하는지 확인하는 함수
  */
 const checkPasswordPattern = (password: string) => {
-  if (!password.match(/^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/)) {
+  if (!password.match(/^(?=.*[0-9]).{6,}$/)) {
     throw new ForbiddenError("비밀번호가 규칙에 어긋납니다!");
   }
 };
