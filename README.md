@@ -86,7 +86,7 @@ bycrpt를 이용한 익명게시판 만들기
 
 <img width="1440" alt="스크린샷 2022-09-07 오후 9 32 19" src="https://user-images.githubusercontent.com/97277365/188879018-ae3baf0c-1698-48c5-8249-f510ceab15b6.png">
 
-## 🛠 실행 방법 정리
+## 실행 방법 정리 🛠
 
 ```
 npm build
