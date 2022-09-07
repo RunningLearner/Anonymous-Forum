@@ -37,7 +37,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
  */
 export const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page, perPage } = req.query;
+    const { page, perPage = 20 } = req.query;
     checkNull({ page, perPage });
 
     const result = await postsService.getAllPost(Number(page), Number(perPage));
