@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { dataSourceOptions } from "./data-source";
 import { DataSource } from "typeorm";
+import router from "./routes/index";
 // import swaggerUi from "swagger-ui-express";
 // import router from "./routes";
 // import swaggerOptions from "./swagger/swagger";
@@ -34,7 +35,8 @@ AppDataSource.initialize()
 //      swaggerUi.setup(swaggerFile, { explorer: true })
 // );
 
-// app.use("/api", router);
+//dev router
+app.use("/api", router);
 
 // 에러 핸들러
 // app.use(errorHandler);
