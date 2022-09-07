@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
+import { BadRequestError } from "../utils/error/errors";
 import * as postsService from "./postsService";
 
 /**
@@ -7,7 +8,7 @@ import * as postsService from "./postsService";
 const checkNull = (object: { [key: string]: any }) => {
   for (let prop in object) {
     if (object[prop] == null || typeof prop == "undefined") {
-      throw new Error(`${prop}이 비었습니다!`);
+      throw new BadRequestError(`${prop}이 비었습니다!`);
     }
   }
 };
