@@ -6,16 +6,17 @@ import router from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
 import YAML from "yamljs";
+import morgan from "morgan";
 // import swaggerOptions from "./swagger/swagger";
 // import errorHandler from "./utils/error/errorHandler";
 
 const app: express.Application = express();
-console.log("hihihi");
 const swaggerFile = YAML.load(path.join(__dirname, "./swagger/swagger-output.yaml"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+app.use(morgan("combined"));
 
 app.get("/welcome", (req: Request, res: Response) => {
   res.send("welcome!");
