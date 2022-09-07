@@ -55,7 +55,7 @@ export const createPost = async (title: string, content: string, password: strin
  */
 export const getAllPost = async (page: number, perPage: number) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find({ skip: (page - 1) * perPage, take: perPage });
     return posts;
   } catch (error: any) {
     throw error;
