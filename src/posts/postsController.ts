@@ -39,7 +39,7 @@ export const getAllPost = async (req: Request, res: Response, next: NextFunction
     const { page, perPage } = req.body;
     checkNull({ page, perPage });
 
-    const result = postsService.getAllPost(Number(page), Number(perPage));
+    const result = await postsService.getAllPost(Number(page), Number(perPage));
 
     res.status(200).json(result);
   } catch (error) {
@@ -55,7 +55,7 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
     const { postId } = req.params;
     checkNull({ postId });
 
-    const result = postsService.getPost(Number(postId));
+    const result = await postsService.getPost(Number(postId));
 
     res.status(200).json(result);
   } catch (error) {
