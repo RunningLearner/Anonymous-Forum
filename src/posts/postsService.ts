@@ -1,5 +1,6 @@
 import { Post } from "../entity/Post";
 import bcrypt from "bcrypt";
+import { ForbiddenError } from "../utils/error/errors";
 
 /**
  * 입력된 비밀번호를 DB 내에 존재하는 비밀번호와 비교하는 함수
@@ -7,7 +8,7 @@ import bcrypt from "bcrypt";
 const checkPassword = async (password: string, hash: string) => {
   const result = bcrypt.compareSync(password, hash);
   if (!result) {
-    throw new Error("Password is wrong");
+    throw new ForbiddenError("Password is wrong");
   }
 };
 
@@ -22,7 +23,7 @@ export const createPost = async (title: string, content: string, password: strin
     post.password = bcrypt.hashSync(password, 12);
     await post.save();
   } catch (error: any) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -34,7 +35,7 @@ export const getAllPost = async (page: number, perPage: number) => {
     const posts = await Post.find();
     return posts;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -46,7 +47,7 @@ export const getPost = async (postId: number) => {
     const post = await Post.findOne({ where: { id: postId } });
     return post;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -70,7 +71,7 @@ export const updatePost = async (
     postInfo.content = content;
     await postInfo.save();
   } catch (error: any) {
-    throw new Error(error.message);
+    throw error;
   }
 };
 
@@ -87,6 +88,6 @@ export const deletePost = async (postId: number, password: string) => {
 
     await Post.remove(postInfo);
   } catch (error: any) {
-    throw new Error(error.message);
+    throw error;
   }
 };

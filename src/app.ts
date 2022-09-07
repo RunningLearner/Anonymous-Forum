@@ -7,6 +7,7 @@ import swaggerUi from "swagger-ui-express";
 import path from "path";
 import YAML from "yamljs";
 import morgan from "morgan";
+import { errorHandler } from "./utils/error/errorHandler";
 // import swaggerOptions from "./swagger/swagger";
 // import errorHandler from "./utils/error/errorHandler";
 
@@ -39,5 +40,5 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use("/api", router);
 
 // 에러 핸들러
-// app.use(errorHandler);
+app.use(errorHandler);
 export default app;
