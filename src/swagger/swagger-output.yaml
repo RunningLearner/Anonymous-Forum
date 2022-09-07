@@ -30,8 +30,8 @@ paths:
       responses:
         "200":
           description: OK
-        "403":
-          description: "{userRole} doesn't have a Permission to read ${postType}"
+        "400":
+          description: "invalid input"
         "500":
           description: "Server Error"
     post:
@@ -62,11 +62,9 @@ paths:
         "201":
           description: "게시글 생성이 완료되었습니다."
         "400":
-          description: "Post values cannot be empty"
+          description: "invalid input"
         "403":
           description: "${userRole} doesn't have a Permission to read ${postType}"
-        "404":
-          description: "This postType doesn't exist in posts.type"
         "500":
           description: "Server Error"
   /api/posts/{id}:
@@ -82,8 +80,6 @@ paths:
       responses:
         "200":
           description: OK
-        "404":
-          description: "The requested URL /${postId} was not found on this server."
         "500":
           description: "Server Error"
     put:
@@ -116,10 +112,10 @@ paths:
                 - content
                 - password
       responses:
-        "204":
+        "200":
           description: OK
-        "401":
-          description: "The requested URL /${postId} was not found on this server."
+        "400":
+          description: "invalid input"
         "403":
           description: "Doesn't have a Permission to update"
         "500":
@@ -146,12 +142,10 @@ paths:
               required:
                 - password
       responses:
-        "204":
+        "200":
           description: OK
         "403":
-          description: "{userRole} doesn't have a Permission to read ${postType}"
-        "404":
-          description: "Doesn't have a Permission to update"
+          description: "{userRole} doesn't have a Permission to delete"
         "500":
           description: "Server Error"
 
