@@ -15,7 +15,7 @@ paths:
     get:
       tags:
         - /posts
-      description: 게시판 게시글 여러 건 불러오기
+      description: 게시글 여러 건 불러오기
       parameters:
         - name: page
           in: query
@@ -37,7 +37,7 @@ paths:
     post:
       tags:
         - /posts
-      description: 게시판 게시글 작성하기
+      description: 게시글 작성하기
       requestBody:
         required: true
         content:
@@ -71,7 +71,7 @@ paths:
     get:
       tags:
         - /posts
-      description: 게시판 게시글 단건 불러오기
+      description: 게시글 단건 불러오기
       parameters:
         - name: id
           in: path
@@ -85,7 +85,7 @@ paths:
     put:
       tags:
         - /posts
-      description: 게시판 게시글 수정하기
+      description: 게시글 수정하기
       parameters:
         - name: id
           in: path
@@ -123,7 +123,7 @@ paths:
     delete:
       tags:
         - /posts
-      description: 자유 게시판 게시글 삭제하기
+      description: 게시글 삭제하기
       parameters:
         - name: id
           in: path
