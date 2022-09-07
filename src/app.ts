@@ -8,8 +8,6 @@ import path from "path";
 import YAML from "yamljs";
 import morgan from "morgan";
 import { errorHandler } from "./utils/error/errorHandler";
-// import swaggerOptions from "./swagger/swagger";
-// import errorHandler from "./utils/error/errorHandler";
 
 const app: express.Application = express();
 const swaggerFile = YAML.load(path.join(__dirname, "./swagger/swagger-output.yaml"));

@@ -11,27 +11,22 @@ schemes:
   - http
 
 paths:
-  /posts/:
+  /api/posts/:
     get:
       tags:
         - /posts
       description: 게시판 게시글 여러 건 불러오기
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                page:
-                  type: string
-                  example: Team G
-                perPage:
-                  type: string
-                  example: 우리는 Team G입니다!
-              required:
-                - page
-                - perPage
+      parameters:
+        - name: page
+          in: query
+          required: true
+          type: number
+        - name: perPage
+          in: query
+          required: true
+          type: number
+          default: 20
+      required: true
       responses:
         "200":
           description: OK
@@ -74,7 +69,7 @@ paths:
           description: "This postType doesn't exist in posts.type"
         "500":
           description: "Server Error"
-  /posts/{id}:
+  /api/posts/{id}:
     get:
       tags:
         - /posts
@@ -91,12 +86,12 @@ paths:
           description: "The requested URL /${postId} was not found on this server."
         "500":
           description: "Server Error"
-    patch:
+    put:
       tags:
         - /posts
       description: 게시판 게시글 수정하기
       parameters:
-        - id: id
+        - name: id
           in: path
           required: true
           type: number
@@ -121,7 +116,7 @@ paths:
                 - content
                 - password
       responses:
-        "200":
+        "204":
           description: OK
         "401":
           description: "The requested URL /${postId} was not found on this server."
@@ -151,7 +146,7 @@ paths:
               required:
                 - password
       responses:
-        "200":
+        "204":
           description: OK
         "403":
           description: "{userRole} doesn't have a Permission to read ${postType}"

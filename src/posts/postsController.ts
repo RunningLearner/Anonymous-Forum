@@ -8,7 +8,7 @@ import * as postsService from "./postsService";
 const checkNull = (object: { [key: string]: any }) => {
   for (let prop in object) {
     if (object[prop] == null || typeof prop == "undefined") {
-      throw new BadRequestError(`${prop}이 비었습니다!`);
+      throw new BadRequestError(`${prop}이/가 비었습니다!`);
     }
   }
 };
@@ -37,7 +37,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
  */
 export const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page, perPage } = req.body;
+    const { page, perPage } = req.query;
     checkNull({ page, perPage });
 
     const result = await postsService.getAllPost(Number(page), Number(perPage));
@@ -53,10 +53,10 @@ export const getAllPost = async (req: Request, res: Response, next: NextFunction
  */
 export const getPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { postId } = req.params;
-    checkNull({ postId });
+    const id = req.params;
+    checkNull({ id });
 
-    const result = await postsService.getPost(Number(postId));
+    const result = await postsService.getPost(Number(id.id));
 
     res.status(200).json(result);
   } catch (error) {
@@ -70,12 +70,12 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
 export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, content, password } = req.body;
-    const { postId } = req.params;
+    const postId = req.params;
     checkNull({ postId, title, content, password });
+    await postsService.updatePost(Number(postId.id), title, content, password);
+    console.log("SUCCESS!!!!");
 
-    await postsService.updatePost(Number(postId), title, content, password);
-
-    res.status(204).json({
+    res.status(200).json({
       success: true,
       message: `게시글 수정이 완료되었습니다.`,
     });
@@ -90,12 +90,12 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
 export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { password } = req.body;
-    const { postId } = req.params;
+    const postId = req.params;
     checkNull({ postId, password });
 
-    await postsService.deletePost(Number(postId), password);
+    await postsService.deletePost(Number(postId.id), password);
 
-    res.status(204).json({
+    res.status(200).json({
       success: true,
       message: `게시글 삭제가 완료되었습니다.`,
     });

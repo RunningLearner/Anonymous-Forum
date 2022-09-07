@@ -10,7 +10,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASENAME,
   synchronize: true, // 처음 서버 실행 이후 false설정 필요
-  logging: true, // 개발완료 후 false설정 필요
+  logging: false,
   entities: [Post],
   charset: "utf8mb4",
 };

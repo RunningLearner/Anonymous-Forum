@@ -67,7 +67,10 @@ export const getAllPost = async (page: number, perPage: number) => {
  */
 export const getPost = async (postId: number) => {
   try {
-    const post = await Post.findOne({ where: { id: postId } });
+    const post = await Post.findOne({
+      select: { title: true, content: true },
+      where: { id: postId },
+    });
     return post;
   } catch (error: any) {
     throw error;
@@ -109,6 +112,7 @@ export const deletePost = async (postId: number, password: string) => {
       throw new Error("게시물이 존재하지 않습니다!");
     }
     checkPassword(password, postInfo.password);
+    console.log("SUCCESS!!!!");
 
     await Post.remove(postInfo);
   } catch (error: any) {
