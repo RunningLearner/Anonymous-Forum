@@ -1,6 +1,15 @@
 import { Post } from "../entity/Post";
 import bcrypt from "bcrypt";
-import { ForbiddenError } from "../utils/error/errors";
+import { BadRequestError, ForbiddenError } from "../utils/error/errors";
+
+/**
+ * 비밀번호 규칙을 만족하는지 확인하는 함수
+ */
+const checkPasswordPattern = async (password: string) => {
+  if (!password.match(/(?=.*\d{1,}){6,}/)) {
+    throw new ForbiddenError("비밀번호가 규칙에 어긋납니다!");
+  }
+};
 
 /**
  * 입력된 비밀번호를 DB 내에 존재하는 비밀번호와 비교하는 함수
@@ -8,7 +17,19 @@ import { ForbiddenError } from "../utils/error/errors";
 const checkPassword = async (password: string, hash: string) => {
   const result = bcrypt.compareSync(password, hash);
   if (!result) {
-    throw new ForbiddenError("Password is wrong");
+    throw new ForbiddenError("비밀번호가 틀렸습니다!");
+  }
+};
+
+/**
+ * 제목과 내용의 길이를 제한하는 함수
+ */
+const checkLength = async (title: string, content: string) => {
+  if (title.length >= 21) {
+    throw new BadRequestError("제목이 너무 깁니다!");
+  }
+  if (content.length >= 201) {
+    throw new BadRequestError("내용이 너무 깁니다!");
   }
 };
 
@@ -17,6 +38,8 @@ const checkPassword = async (password: string, hash: string) => {
  */
 export const createPost = async (title: string, content: string, password: string) => {
   try {
+    checkLength(title, content);
+    checkPasswordPattern(password);
     const post = new Post();
     post.title = title;
     post.content = content;
@@ -63,9 +86,10 @@ export const updatePost = async (
   try {
     const postInfo = await Post.findOne({ where: { id: postId } });
     if (!postInfo) {
-      throw new Error("Post doesn't exist in DB");
+      throw new Error("게시물이 존재하지 않습니다!");
     }
     checkPassword(password, postInfo.password);
+    checkLength(title, content);
 
     postInfo.title = title;
     postInfo.content = content;
@@ -82,7 +106,7 @@ export const deletePost = async (postId: number, password: string) => {
   try {
     const postInfo = await Post.findOne({ where: { id: postId } });
     if (!postInfo) {
-      throw new Error("Post doesn't exist in DB");
+      throw new Error("게시물이 존재하지 않습니다!");
     }
     checkPassword(password, postInfo.password);
 
